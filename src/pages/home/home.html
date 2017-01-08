@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Ionic Blank
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <canvas id="wboard">
+  </canvas>
+   <ion-fab left bottom>
+    <button (click)="clear()" ion-fab><ion-icon name="trash"></ion-icon></button>
+   </ion-fab>
+   <ion-fab right bottom>
+    <button (click)="play()" ion-fab><ion-icon name="play"></ion-icon></button>
+   </ion-fab>
+</ion-content>
