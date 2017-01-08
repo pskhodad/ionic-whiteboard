@@ -1,13 +1,14 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { HomePage, RewriteModal } from '../pages/home/home';
+import { HomePage, RewriteModal, ReplayPage } from '../pages/home/home';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    RewriteModal
+    RewriteModal,
+    ReplayPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -16,7 +17,8 @@ import { HomePage, RewriteModal } from '../pages/home/home';
   entryComponents: [
     MyApp,
     HomePage,
-    RewriteModal
+    RewriteModal,
+    ReplayPage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

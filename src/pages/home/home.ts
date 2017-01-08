@@ -2,8 +2,58 @@ import { Component } from '@angular/core';
 
 import { NavController, ModalController, NavParams, ViewController } from 'ionic-angular';
 
+import { DomSanitizer } from '@angular/platform-browser';
+
 declare var fabric;
 declare var Vivus;
+
+@Component({
+  template: `
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Replay</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+<!--
+    <div id="my-div-page" [innerHTML]="url"></div>
+-->    
+    <object id="my-svg" type="image/svg+xml" [data]="url"></object>
+    <ion-fab right bottom>
+      <button (click)="share()" ion-fab><ion-icon name="share"></ion-icon></button>
+    </ion-fab>
+</ion-content>
+  `
+})
+export class ReplayPage {
+
+  url: any;
+  theVivus: any;
+  showSVG: boolean = false;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public _sanitizer: DomSanitizer) {
+    this.url = this._sanitizer.bypassSecurityTrustResourceUrl(this.navParams.get('url'));
+    this.showSVG = false;
+  }
+
+  ionViewDidEnter() {
+    this.showSVG = true;
+    this.theVivus = new Vivus('my-svg', { duration: 200, type: 'oneByOne' }, () => {
+      console.log('Vivus ready callback');
+    });
+  }
+
+  ionViewWillLeave() {
+    this.showSVG = false;
+    this.theVivus.stop();
+  }
+
+}
+
 
 @Component({
   template: `
@@ -34,11 +84,11 @@ export class RewriteModal {
   url: any;
   theVivus: any;
 
-  constructor(params: NavParams,  public viewCtrl: ViewController) {
+  constructor(params: NavParams, public viewCtrl: ViewController) {
     this.url = params.get('url');
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.theVivus = new Vivus('my-div', { duration: 200, type: 'oneByOne', file: this.url }, () => {
       console.log('Vivus ready callback');
     });
@@ -49,7 +99,7 @@ export class RewriteModal {
     this.viewCtrl.dismiss();
   }
 
-  share() {    
+  share() {
   }
 
 }
@@ -73,7 +123,7 @@ export class HomePage {
       isDrawingMode: true
     });
     this.wboard.setWidth(window.innerWidth * 0.95);
-    this.wboard.setHeight(window.innerHeight * 0.9);
+    this.wboard.setHeight(window.innerHeight * 0.8);
     this.wboard.freeDrawingBrush.width = 5;
   }
 
@@ -81,9 +131,16 @@ export class HomePage {
     var data = this.wboard.toSVG({ suppressPreamble: true }, (svg) => {
       return svg.replace('stroke-dasharray: none;', '');
     });
+    console.log(data);
     var url = window.URL.createObjectURL(new Blob([data], { type: "image/svg+xml;charset=utf-8" }));
-    let profileModal = this.modalCtrl.create(RewriteModal, { url: url });
-    profileModal.present();
+
+    this.navCtrl.push(ReplayPage, {
+      url: url
+    });
+
+
+    // let profileModal = this.modalCtrl.create(RewriteModal, { url: url });
+    // profileModal.present();
     // var url = window.URL.createObjectURL(new Blob([data], { type: "image/svg+xml;charset=utf-8" }));
     // console.log(url);
     /*
